@@ -22,7 +22,7 @@ async def question_client_ip(request: Request):
         client_ip = client_ip[0]
 
     if len(client_ip.split(',')) > 1:
-        client_ip = client_ip[0]
+        client_ip = client_ip.split(',')[0]
 
     result = query.get_ip_data(client_ip)
     result['client_ip'] = client_ip
