@@ -8,7 +8,7 @@ def get_bs4_clean_text(obj):
     return obj.text.replace('\n','').strip()
 
 
-def get_ip_data(ip) -> dict:
+def get_ip_data(ip='') -> dict:
     result = {}
     response = requests.get(API_QUERY_HOST / API_QUERY_PATH + ip)
     pyload = BeautifulSoup(response.text, 'html.parser')

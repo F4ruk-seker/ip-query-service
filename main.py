@@ -1,4 +1,6 @@
 from fastapi import FastAPI, Request
+from fastapi import Depends, Header
+
 from program import query
 from program.database import save_query, get_ip_from_id
 
@@ -13,6 +15,8 @@ except:
 @app.get("/")
 async def question_client_ip(request: Request):
     client_ip = request.client.host
+    if _ := request.headers.get("X-Forwarded-For"):
+        client_ip = _
     result = query.get_ip_data(client_ip)
     result['client_ip'] = client_ip
     result = save_query(result)
@@ -25,6 +29,8 @@ async def question_client_ip(request: Request):
 async def question_ip(ip: str, request: Request):
     result = query.get_ip_data(ip)
     result['client_ip'] = request.client.host
+    if _ := request.headers.get("X-Forwarded-For"):
+        result['client_ip'] = _
     result = save_query(result)
 
     if SERVER_IP != ip and SERVER_IP != result.get('host'):
