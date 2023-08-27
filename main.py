@@ -17,9 +17,14 @@ async def question_client_ip(request: Request):
     client_ip = request.client.host
     if _ := request.headers.get("X-Forwarded-For"):
         client_ip = _
+
+    if len(client_ip) > 1 and type(client_ip) is list:
+        client_ip = client_ip[0]
+
     result = query.get_ip_data(client_ip)
     result['client_ip'] = client_ip
     result = save_query(result)
+
     if SERVER_IP != client_ip and SERVER_IP != result.get('host'):
         result.pop('client_ip')
         return result
@@ -31,8 +36,11 @@ async def question_ip(ip: str, request: Request):
     result['client_ip'] = request.client.host
     if _ := request.headers.get("X-Forwarded-For"):
         result['client_ip'] = _
-    result = save_query(result)
 
+    if len(result['client_ip']) > 1 and type(result['client_ip']) is list:
+        result['client_ip'] = result['client_ip'][0]
+
+    result = save_query(result)
     if SERVER_IP != ip and SERVER_IP != result.get('host'):
         result.pop('client_ip')
         return result
