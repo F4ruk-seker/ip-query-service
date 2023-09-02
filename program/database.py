@@ -23,6 +23,9 @@ def get_ip_from_id(_id):
         com = connection['pars_ip_api']
         ip_list = com['ip_query_list']
         results = ip_list.find_one(ObjectId(_id))
+        for k, v in results.items():
+            if type(v) is ObjectId:
+                results[k] = str(v)
         return results
     finally:
         connection.close()
